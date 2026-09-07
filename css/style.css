@@ -1,0 +1,56 @@
+h1{
+    font-family: 'Playfair Display', serif;
+    color: var(--verde-esmeralda);
+}
+
+h2{
+    font-family: 'Montserrat', sans-serif;
+    color: var(--amarillo-mostaza);
+}
+
+h3{
+    font-family: 'Montserrat', sans-serif;
+    color: var(--marron-claro);
+}
+h4{
+    font-family: 'Montserrat', sans-serif;
+    color: var(--gris-medio);
+}
+h5{
+    font-family: 'Montserrat', sans-serif;
+    color: var(--gris-oscuro);
+}
+h6{
+    font-family: 'Montserrat', sans-serif;
+}
+:root{
+    --blanco-suave: #F7F7F7;
+    --verde-esmeralda:  #2E8B57;
+    --amarillo-mostaza: #FFD700;
+    --marron-claro: #8B4513;
+    --gris-oscuro: #333333;
+    --gris-medio: #666666;
+}
+
+body {
+    /* Ruta de la imagen o enlace web */
+    background-image: url('../img/FondoPapel.jpg');
+    
+    /* Evita que la imagen se repita */
+    background-repeat: no-repeat;
+    
+    /* Ajusta la imagen para que cubra toda la pantalla */
+    background-size: cover;
+    
+    /* Centra la imagen en la pantalla */
+    background-position: center;
+    
+    /* Mantiene la imagen fija al deslizar la página */
+    background-attachment: fixed;
+    
+    /* Elimina los márgenes predeterminados del navegador */
+    margin: 0;
+    
+    /* Asegura que el alto ocupe toda la ventana */
+    height: 100vh;
+}
