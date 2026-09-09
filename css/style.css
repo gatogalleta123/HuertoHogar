@@ -1,3 +1,39 @@
+body {
+    /* Ruta de la imagen o enlace web */
+    background-image: url('../img/FondoPapel.jpg');
+    
+    /* Evita que la imagen se repita */
+    background-repeat: no-repeat;
+    
+    /* Ajusta la imagen para que cubra toda la pantalla */
+    background-size: cover;
+    
+    /* Centra la imagen en la pantalla */
+    background-position: center;
+    
+    /* Mantiene la imagen fija al deslizar la página */
+    background-attachment: fixed;
+    
+    /* Elimina los márgenes predeterminados del navegador */
+    margin: 0;
+    
+    /* Asegura que el alto ocupe toda la ventana */
+    height: 100vh;
+
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+header{
+    background-color: var(--verde-esmeralda);
+}
+
+.logo-prov{
+    color: black;
+    margin-right: 40px;
+}
+
+
 h1{
     font-family: 'Playfair Display', serif;
     color: var(--verde-esmeralda);
@@ -23,6 +59,9 @@ h5{
 h6{
     font-family: 'Montserrat', sans-serif;
 }
+p{
+    font-family: 'Montserrat', sans-serif;
+}
 :root{
     --blanco-suave: #F7F7F7;
     --verde-esmeralda:  #2E8B57;
@@ -32,25 +71,3 @@ h6{
     --gris-medio: #666666;
 }
 
-body {
-    /* Ruta de la imagen o enlace web */
-    background-image: url('../img/FondoPapel.jpg');
-    
-    /* Evita que la imagen se repita */
-    background-repeat: no-repeat;
-    
-    /* Ajusta la imagen para que cubra toda la pantalla */
-    background-size: cover;
-    
-    /* Centra la imagen en la pantalla */
-    background-position: center;
-    
-    /* Mantiene la imagen fija al deslizar la página */
-    background-attachment: fixed;
-    
-    /* Elimina los márgenes predeterminados del navegador */
-    margin: 0;
-    
-    /* Asegura que el alto ocupe toda la ventana */
-    height: 100vh;
-}

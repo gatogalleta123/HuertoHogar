@@ -4,24 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <title>HuertoHogar - Login</title>
+
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+    </style>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<header>
-    <div class="header-menu">
-        <div>
-            <h1>HuertoHogar</h1>
-            <h5> Del Campo Al Hogar</h5>
-        </div>
-        <div>
-            <a href="index.html">Inicio</a>
-            <a href="login.html">Iniciar sesión/Registrarse</a>
-            <a>Perfil</a>
-            <a href="catalogo.html">Catálogo</a>
-            <a>Carrito</a>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Huerto Hogar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+                <a class="nav-link" href="#">Iniciar Sesion/Registrarse</a>
+                <a class="nav-link" href="#">Perfil</a>
+                <a class="nav-link" href="#">Catalogo</a>
+                <a class="nav-link" href="#">Carrito</a>
+            </div>
         </div>
     </div>
-</header>
+</nav>
 
 <body>
     <div class="contenedor">
@@ -36,7 +49,7 @@
                     <label for="password">Contraseña:</label>
                     <input type="password" id="password" required placeholder="******">
                 </div>
-                <button type="submit" class="boton" style="width: 100%;">Ingresar</button>
+                <button type="submit" class="btn btn-success" style="width: 100%;">Ingresar</button>
             </form>
         </div>
     </div>
