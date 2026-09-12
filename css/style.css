@@ -28,6 +28,10 @@ header{
     background-color: var(--verde-esmeralda);
 }
 
+footer {
+    background-color: var(--verde-esmeralda);
+}
+
 .logo-prov{
     color: black;
     margin-right: 40px;
@@ -36,31 +40,36 @@ header{
 
 h1{
     font-family: 'Playfair Display', serif;
-    color: var(--verde-esmeralda);
+    color: var(--marron-claro);
 }
 
 h2{
     font-family: 'Montserrat', sans-serif;
-    color: var(--amarillo-mostaza);
+    color: var(--marron-claro);
 }
 
 h3{
     font-family: 'Montserrat', sans-serif;
-    color: var(--marron-claro);
+    color: var(--gris-oscuro);
 }
 h4{
     font-family: 'Montserrat', sans-serif;
-    color: var(--gris-medio);
+    color: var(--gris-oscuro);
 }
 h5{
     font-family: 'Montserrat', sans-serif;
-    color: var(--gris-oscuro);
+    color: var(--gris-medio);
 }
 h6{
     font-family: 'Montserrat', sans-serif;
 }
 p{
     font-family: 'Montserrat', sans-serif;
+}
+
+.card-img-top{
+    height: 300px;
+    object-fit: cover;
 }
 :root{
     --blanco-suave: #F7F7F7;
