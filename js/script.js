@@ -8,6 +8,7 @@
     "use strict";
 
     const STORAGE_KEY = "huertoHogarCarrito";
+    const SESSION_KEY = "huertoHogarSesionActiva";
 
     const productosHuerto = [
         { id: "manzanas", nombre: "Manzanas Fuji", precio: 1200, imagen: "img/manzana2.jpg" },
@@ -74,6 +75,65 @@
 
     function formatearPrecio(numero) {
         return "$" + Number(numero).toLocaleString("es-CL");
+    }
+
+    function actualizarBotonSesion() {
+        const botones = document.querySelectorAll("a.btn-warning[href='login.html']");
+        const sesionActiva = localStorage.getItem(SESSION_KEY) === "true";
+
+        botones.forEach(boton => {
+            boton.textContent = sesionActiva
+                ? "Cerrar Sesión"
+                : "Iniciar Sesión / Registrarse";
+
+            boton.addEventListener("click", function (event) {
+                if (!sesionActiva) {
+                    return;
+                }
+
+                event.preventDefault();
+                localStorage.removeItem(SESSION_KEY);
+                window.location.href = "index.html";
+            });
+        });
+    }
+
+    function prepararLogin() {
+        const formulario = document.getElementById("formLogin");
+
+        if (!formulario) {
+            return;
+        }
+
+        const correo = document.getElementById("correoLogin");
+        const contrasena = document.getElementById("contrasena");
+        const boton = formulario.querySelector("button[type='submit']");
+        const mensaje = document.createElement("div");
+
+        mensaje.className = "alert d-none mt-3";
+        mensaje.setAttribute("role", "alert");
+        formulario.insertBefore(mensaje, boton.parentElement);
+
+        formulario.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const correoValido = correo.value.includes("@") && correo.value.includes(".");
+
+            if (!correoValido) {
+                mensaje.className = "alert alert-danger mt-3";
+                mensaje.textContent = "El correo no es válido. Ejemplo@ejemplo.cl";
+                return;
+            }
+
+            if (!contrasena.value.trim()) {
+                mensaje.className = "alert alert-danger mt-3";
+                mensaje.textContent = "Ingresa tu contraseña.";
+                return;
+            }
+
+            localStorage.setItem(SESSION_KEY, "true");
+            window.location.href = "index.html";
+        });
     }
 
     /* ---------------------------------------------------------
@@ -638,6 +698,8 @@
         prepararRegistro();
         prepararNuevoUsuario();
         prepararCupon();
+        prepararLogin();
+        actualizarBotonSesion();
 
         if (document.getElementById("totalCarrito")) {
             actualizarCarritoVisual();
