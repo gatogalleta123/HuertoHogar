@@ -18,6 +18,7 @@
         crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
 </head>
 
 
@@ -129,7 +130,7 @@
                                 </button>
 
                                 <span id="cantidad-manzanas" class="border rounded px-4 py-2">
-                                    1
+                                    0
                                 </span>
 
                                 <button type="button" class="btn btn-outline-secondary rounded-circle"
@@ -197,7 +198,7 @@
                                 </button>
 
                                 <span id="cantidad-platanos" class="border rounded px-4 py-2">
-                                    1
+                                    0
                                 </span>
 
                                 <button type="button" class="btn btn-outline-secondary rounded-circle"
@@ -265,7 +266,7 @@
                                 </button>
 
                                 <span id="cantidad-naranjas" class="border rounded px-4 py-2">
-                                    1
+                                    0
                                 </span>
 
                                 <button type="button" class="btn btn-outline-secondary rounded-circle"
@@ -315,7 +316,7 @@
                         </span>
 
                         <strong id="totalCarrito">
-                            $370
+                            $0
                         </strong>
 
                     </div>
@@ -357,107 +358,6 @@
 </div>
 
 
-<!-- ========================================= -->
-<!-- JavaScript -->
-<!-- ========================================= -->
-
-<script>
-
-    /*
-     * Productos que actualmente están
-     * dentro del carrito.
-     */
-    const carrito = {
-
-        manzanas: {
-            precio: 100,
-            cantidad: 1
-        },
-
-        platanos: {
-            precio: 120,
-            cantidad: 1
-        },
-
-        naranjas: {
-            precio: 150,
-            cantidad: 1
-        }
-
-    };
-
-
-    /*
-     * Cambia la cantidad de un producto.
-     *
-     * El segundo parámetro puede ser:
-     * +1 para aumentar
-     * -1 para disminuir
-     */
-    function cambiarCantidad(producto, cambio) {
-
-        const item = carrito[producto];
-
-
-        // Evita que la cantidad sea menor que 1
-        item.cantidad += cambio;
-
-        if (item.cantidad < 1) {
-
-            item.cantidad = 1;
-
-        }
-
-
-        // Actualizar cantidad visual
-        document.getElementById(
-            "cantidad-" + producto
-        ).textContent = item.cantidad;
-
-
-        // Actualizar total
-        actualizarTotal();
-
-    }
-
-
-    /*
-     * Calcula nuevamente el total
-     * de todos los productos.
-     */
-    function actualizarTotal() {
-
-        let total = 0;
-
-
-        for (const producto in carrito) {
-
-            const item = carrito[producto];
-
-            total += item.precio * item.cantidad;
-
-        }
-
-
-        document.getElementById("totalCarrito").textContent =
-            "$" + total;
-
-    }
-
-
-    /*
-     * Botón de pagar.
-     *
-     * Por ahora solamente representa
-     * la acción.
-     */
-    function pagar() {
-
-        alert("Continuar al proceso de pago.");
-
-    }
-
-</script>
 <!--
 *--------------------------------------------*
                 CARRITO

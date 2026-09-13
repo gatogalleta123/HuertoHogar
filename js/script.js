@@ -37,7 +37,7 @@
         return productosHuerto.find(producto => producto.id === id);
     }
 
-    function agregarProducto(producto, cantidad = 1) {
+    function agregarProducto(producto, cantidad = 0) {
         const carrito = cargarCarrito();
 
         if (!carrito[producto.id]) {
@@ -141,14 +141,14 @@
                 nombre: base.nombre,
                 precio: base.precio,
                 imagen: base.imagen,
-                cantidad: 1
+                cantidad: 0
             };
         }
 
         carrito[producto].cantidad += cambio;
 
-        if (carrito[producto].cantidad < 1) {
-            carrito[producto].cantidad = 1;
+        if (carrito[producto].cantidad < 0) {
+            carrito[producto].cantidad = 0;
         }
 
         guardarCarrito(carrito);
@@ -165,8 +165,8 @@
         ["manzanas", "platanos", "naranjas"].forEach(id => {
             const elemento = document.getElementById("cantidad-" + id);
 
-            if (elemento && carritoGuardado[id]) {
-                elemento.textContent = carritoGuardado[id].cantidad;
+            if (elemento) {
+                elemento.textContent = carritoGuardado[id]?.cantidad ?? 0;
             }
         });
 
@@ -180,21 +180,13 @@
             return;
         }
 
-        /*
-         * Si el carrito está vacío en localStorage, se conserva
-         * la demostración original del HTML: 1 de cada producto.
-         */
         const carritoGuardado = cargarCarrito();
 
         let total = 0;
 
-        if (Object.keys(carritoGuardado).length === 0) {
-            total = 100 + 120 + 150;
-        } else {
-            Object.values(carritoGuardado).forEach(item => {
-                total += Number(item.precio) * Number(item.cantidad);
-            });
-        }
+        Object.values(carritoGuardado).forEach(item => {
+            total += Number(item.precio) * Number(item.cantidad);
+        });
 
         elementoTotal.textContent = formatearPrecio(total);
     };
@@ -450,6 +442,33 @@
         });
     }
 
+    function prepararNuevoUsuario() {
+        const formulario = document.getElementById("formNuevoUsuario");
+
+        if (!formulario) {
+            return;
+        }
+
+        formulario.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const contrasena = document.getElementById("password");
+            const confirmar = document.getElementById("confirmarPassword");
+
+            if (!contrasena || !confirmar) {
+                return;
+            }
+
+            if (contrasena.value !== confirmar.value) {
+                alert("Las contraseñas no coinciden.");
+                return;
+            }
+
+            alert("Usuario registrado correctamente.");
+            formulario.reset();
+        });
+    }
+
     /* ---------------------------------------------------------
        ADMINISTRACIÓN
        --------------------------------------------------------- */
@@ -494,6 +513,7 @@
         prepararCatalogo();
         prepararDetalle();
         prepararRegistro();
+        prepararNuevoUsuario();
         prepararCupon();
 
         if (document.getElementById("totalCarrito")) {

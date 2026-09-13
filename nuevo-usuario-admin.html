@@ -18,6 +18,7 @@
         crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
 </head>
 
 <body>
@@ -311,71 +312,6 @@
     
     </div>
 </body>
-
-
-<!-- JavaScript -->
-<script>
-
-    function nuevoUsuario() {
-
-        alert("Abrir formulario para crear un nuevo usuario.");
-
-    }
-
-
-    function editarUsuario(id) {
-
-        alert("Editar usuario con ID: " + id);
-
-    }
-
-
-    function eliminarUsuario(id) {
-
-        const confirmar = confirm(
-            "¿Deseas eliminar el usuario " + id + "?"
-        );
-
-        if (confirmar) {
-
-            alert("Usuario eliminado.");
-
-        }
-
-    }
-
-
-    function filtrarUsuarios() {
-
-        const filtro =
-            document.getElementById("filtroUsuarios").value;
-
-        const usuarios =
-            document.querySelectorAll("#tablaUsuarios tr");
-
-
-        usuarios.forEach(function (usuario) {
-
-            const rol =
-                usuario.getAttribute("data-rol");
-
-
-            if (filtro === "todos" || rol === filtro) {
-
-                usuario.style.display = "";
-
-            } else {
-
-                usuario.style.display = "none";
-
-            }
-
-        });
-
-    }
-
-</script>
-
 
 
 </html>
