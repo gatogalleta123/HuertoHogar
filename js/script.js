@@ -10,19 +10,31 @@
     const STORAGE_KEY = "huertoHogarCarrito";
 
     const productosHuerto = [
-        { id: "manzanas", nombre: "Manzanas", precio: 100, imagen: "img/manzana2.jpg" },
-        { id: "platanos", nombre: "Plátanos", precio: 120, imagen: "img/banana.jpg" },
-        { id: "naranjas", nombre: "Naranjas", precio: 150, imagen: "img/naranja2.jpg" },
-        { id: "zanahorias", nombre: "Zanahorias", precio: 100, imagen: "img/zanahoria.jpg" },
-        { id: "espinacas", nombre: "Espinacas", precio: 130, imagen: "img/espinaca3.jpg" },
-        { id: "pimientos", nombre: "Pimientos", precio: 180, imagen: "img/pimiento2.jpg" },
-        { id: "miel", nombre: "Miel", precio: 250, imagen: "img/miel.jpg" }
+        { id: "manzanas", nombre: "Manzanas Fuji", precio: 1200, imagen: "img/manzana2.jpg" },
+        { id: "naranjas", nombre: "Naranjas Valencia", precio: 1000, imagen: "img/naranja2.jpg" },
+        { id: "platanos", nombre: "Plátanos Cavendish", precio: 800, imagen: "img/banana.jpg" },
+        { id: "zanahorias", nombre: "Zanahorias Orgánicas", precio: 900, imagen: "img/zanahoria.jpg" },
+        { id: "espinacas", nombre: "Espinacas Frescas", precio: 700, imagen: "img/espinaca3.jpg" },
+        { id: "pimientos", nombre: "Pimientos Tricolores", precio: 1500, imagen: "img/pimiento2.jpg" },
+        { id: "miel", nombre: "Miel Orgánica", precio: 5000, imagen: "img/miel.jpg" }
     ];
 
     function cargarCarrito() {
         try {
             const guardado = localStorage.getItem(STORAGE_KEY);
-            return guardado ? JSON.parse(guardado) : {};
+            const carrito = guardado ? JSON.parse(guardado) : {};
+
+            Object.values(carrito).forEach(item => {
+                const producto = buscarProducto(item.id);
+
+                if (producto) {
+                    item.nombre = producto.nombre;
+                    item.precio = producto.precio;
+                    item.imagen = producto.imagen;
+                }
+            });
+
+            return carrito;
         } catch (error) {
             console.warn("No se pudo leer el carrito:", error);
             return {};
@@ -37,22 +49,27 @@
         return productosHuerto.find(producto => producto.id === id);
     }
 
-    function agregarProducto(producto, cantidad = 0) {
+    function agregarProducto(producto, cantidad = 1) {
         const carrito = cargarCarrito();
+        const productoOficial = buscarProducto(producto.id) || producto;
 
-        if (!carrito[producto.id]) {
-            carrito[producto.id] = {
-                id: producto.id,
-                nombre: producto.nombre,
-                precio: producto.precio,
-                imagen: producto.imagen,
+        if (!carrito[productoOficial.id]) {
+            carrito[productoOficial.id] = {
+                id: productoOficial.id,
+                nombre: productoOficial.nombre,
+                precio: productoOficial.precio,
+                imagen: productoOficial.imagen,
                 cantidad: 0
             };
         }
 
-        carrito[producto.id].cantidad += cantidad;
+        carrito[productoOficial.id].precio = productoOficial.precio;
+        carrito[productoOficial.id].nombre = productoOficial.nombre;
+        carrito[productoOficial.id].imagen = productoOficial.imagen;
+
+        carrito[productoOficial.id].cantidad += cantidad;
         guardarCarrito(carrito);
-        return carrito[producto.id];
+        return carrito[productoOficial.id];
     }
 
     function formatearPrecio(numero) {
@@ -63,6 +80,72 @@
        CATÁLOGO
        Permite que "Agregar al carrito" realmente agregue.
        --------------------------------------------------------- */
+
+    function mostrarOpcionesCarrito(producto) {
+        const modal = document.createElement("div");
+
+        modal.className = "modal fade";
+        modal.tabIndex = -1;
+        modal.setAttribute("aria-hidden", "true");
+        modal.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title h5">Producto añadido</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-0">${producto.nombre} fue añadido al carrito.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-success" data-accion="continuar">
+                            Continuar comprando
+                        </button>
+                        <button type="button" class="btn btn-success" data-accion="carrito">
+                            Ir al carrito
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        if (!window.bootstrap?.Modal) {
+            const irAlCarrito = window.confirm(
+                producto.nombre + " fue añadido al carrito.\n\n" +
+                "Aceptar: ir al carrito\nCancelar: continuar comprando"
+            );
+
+            modal.remove();
+
+            if (irAlCarrito) {
+                window.location.href = "carrito.html";
+            }
+
+            return;
+        }
+
+        const instancia = new window.bootstrap.Modal(modal, {
+            backdrop: "static"
+        });
+
+        modal.querySelector('[data-accion="continuar"]').addEventListener("click", function () {
+            instancia.hide();
+        });
+
+        modal.querySelector('[data-accion="carrito"]').addEventListener("click", function () {
+            window.location.href = "carrito.html";
+        });
+
+        modal.addEventListener("hidden.bs.modal", function () {
+            instancia.dispose();
+            modal.remove();
+        }, { once: true });
+
+        instancia.show();
+    }
 
     function prepararCatalogo() {
         const enlaces = document.querySelectorAll("a[href='carrito.html']");
@@ -114,9 +197,7 @@
                 }
 
                 agregarProducto(producto, 1);
-
-                alert(producto.nombre + " fue añadido al carrito.");
-                window.location.href = "carrito.html";
+                mostrarOpcionesCarrito(producto);
             });
         });
     }
@@ -130,6 +211,10 @@
         const carrito = cargarCarrito();
 
         if (!carrito[producto]) {
+            if (cambio <= 0) {
+                return;
+            }
+
             const base = buscarProducto(producto);
 
             if (!base) {
@@ -151,25 +236,63 @@
             carrito[producto].cantidad = 0;
         }
 
+        if (carrito[producto].cantidad === 0) {
+            delete carrito[producto];
+        }
+
         guardarCarrito(carrito);
         actualizarCarritoVisual();
     };
 
+    function renderizarCarrito() {
+        const contenedor = document.getElementById("listaCarrito");
+
+        if (!contenedor) {
+            return;
+        }
+
+        const productos = Object.values(cargarCarrito())
+            .filter(item => Number(item.cantidad) > 0);
+
+        if (productos.length === 0) {
+            contenedor.innerHTML = `
+                <p class="text-muted mb-4">
+                    Tu carrito está vacío.
+                </p>
+            `;
+            return;
+        }
+
+        contenedor.innerHTML = productos.map(item => `
+            <div class="border-bottom pb-4 mb-4">
+                <div class="row align-items-center g-3">
+                    <div class="col-4 col-md-3">
+                        <img src="${item.imagen}" alt="${item.nombre}" class="img-fluid rounded"
+                            style="height: 150px; width: 100%; object-fit: cover;">
+                    </div>
+                    <div class="col-8 col-md-5">
+                        <h2 class="h5">${item.nombre}</h2>
+                        <p class="text-muted mb-0">Producto fresco y seleccionado de Huerto Hogar.</p>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="text-md-end">
+                            <p class="fw-semibold mb-2">${formatearPrecio(item.precio)}</p>
+                            <div class="d-flex justify-content-md-end align-items-center gap-2">
+                                <button type="button" class="btn btn-outline-secondary rounded-circle"
+                                    onclick="cambiarCantidad('${item.id}', -1)">-</button>
+                                <span class="border rounded px-4 py-2">${item.cantidad}</span>
+                                <button type="button" class="btn btn-outline-secondary rounded-circle"
+                                    onclick="cambiarCantidad('${item.id}', 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join("");
+    }
+
     function actualizarCarritoVisual() {
-        const carritoGuardado = cargarCarrito();
-
-        /*
-         * Los tres productos originales del HTML siguen visibles.
-         * Si existe una cantidad guardada, se utiliza.
-         */
-        ["manzanas", "platanos", "naranjas"].forEach(id => {
-            const elemento = document.getElementById("cantidad-" + id);
-
-            if (elemento) {
-                elemento.textContent = carritoGuardado[id]?.cantidad ?? 0;
-            }
-        });
-
+        renderizarCarrito();
         actualizarTotal();
     }
 
