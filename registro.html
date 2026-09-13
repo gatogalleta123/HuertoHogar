@@ -54,7 +54,7 @@
         
                 <h2 class="text-center mb-4">Crear cuenta</h2>
         
-                <form>
+                <form id="formRegistro" novalidate>
         
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre completo</label>
@@ -73,7 +73,7 @@
         
                     <div class="mb-3">
                         <label for="contrasena" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="contrasena">
+                        <input type="password" class="form-control" id="contrasena"
                             placeholder="Ingrese su contraseña">
                     </div>
         
@@ -107,10 +107,9 @@
         
                     <div class="mb-3">
                         <label for="comuna" class="form-label">Comuna</label>
-                        <input type="text" class="form-control" id="nombre" placeholder="Ingrese la comuna de su dirección">
+                        <input type="text" class="form-control" id="comuna" placeholder="Ingrese la comuna de su dirección">
                     </div>
-        
-        
+
                     <div class="d-grid">
                         <button type="submit" class="btn btn-success">
                             Registrar
