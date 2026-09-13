@@ -1,0 +1,504 @@
+/* =========================================================
+   HUERTO HOGAR - JAVASCRIPT
+   Funciones comunes del proyecto.
+   No necesita librerías adicionales.
+   ========================================================= */
+
+(function () {
+    "use strict";
+
+    const STORAGE_KEY = "huertoHogarCarrito";
+
+    const productosHuerto = [
+        { id: "manzanas", nombre: "Manzanas", precio: 100, imagen: "img/manzana2.jpg" },
+        { id: "platanos", nombre: "Plátanos", precio: 120, imagen: "img/banana.jpg" },
+        { id: "naranjas", nombre: "Naranjas", precio: 150, imagen: "img/naranja2.jpg" },
+        { id: "zanahorias", nombre: "Zanahorias", precio: 100, imagen: "img/zanahoria.jpg" },
+        { id: "espinacas", nombre: "Espinacas", precio: 130, imagen: "img/espinaca3.jpg" },
+        { id: "pimientos", nombre: "Pimientos", precio: 180, imagen: "img/pimiento2.jpg" },
+        { id: "miel", nombre: "Miel", precio: 250, imagen: "img/miel.jpg" }
+    ];
+
+    function cargarCarrito() {
+        try {
+            const guardado = localStorage.getItem(STORAGE_KEY);
+            return guardado ? JSON.parse(guardado) : {};
+        } catch (error) {
+            console.warn("No se pudo leer el carrito:", error);
+            return {};
+        }
+    }
+
+    function guardarCarrito(carrito) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
+    }
+
+    function buscarProducto(id) {
+        return productosHuerto.find(producto => producto.id === id);
+    }
+
+    function agregarProducto(producto, cantidad = 1) {
+        const carrito = cargarCarrito();
+
+        if (!carrito[producto.id]) {
+            carrito[producto.id] = {
+                id: producto.id,
+                nombre: producto.nombre,
+                precio: producto.precio,
+                imagen: producto.imagen,
+                cantidad: 0
+            };
+        }
+
+        carrito[producto.id].cantidad += cantidad;
+        guardarCarrito(carrito);
+        return carrito[producto.id];
+    }
+
+    function formatearPrecio(numero) {
+        return "$" + Number(numero).toLocaleString("es-CL");
+    }
+
+    /* ---------------------------------------------------------
+       CATÁLOGO
+       Permite que "Agregar al carrito" realmente agregue.
+       --------------------------------------------------------- */
+
+    function prepararCatalogo() {
+        const enlaces = document.querySelectorAll("a[href='carrito.html']");
+
+        enlaces.forEach(enlace => {
+            if (enlace.textContent.trim().toLowerCase() !== "agregar al carrito") {
+                return;
+            }
+
+            enlace.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                const card = enlace.closest(".card");
+
+                if (!card) {
+                    window.location.href = "carrito.html";
+                    return;
+                }
+
+                const titulo = card.querySelector(".card-title");
+                const precioTexto = card.querySelector(".card-text");
+
+                const nombre = titulo
+                    ? titulo.textContent.trim()
+                    : "Producto";
+
+                const productoBase = productosHuerto.find(producto =>
+                    nombre.toLowerCase().includes(producto.nombre.toLowerCase().replace("es", ""))
+                );
+
+                let producto;
+
+                if (productoBase) {
+                    producto = productoBase;
+                } else {
+                    const precioEncontrado = precioTexto
+                        ? precioTexto.textContent.replace(/[^\d]/g, "")
+                        : "0";
+
+                    producto = {
+                        id: nombre.toLowerCase()
+                            .normalize("NFD")
+                            .replace(/[\u0300-\u036f]/g, "")
+                            .replace(/\s+/g, "-"),
+                        nombre: nombre,
+                        precio: Number(precioEncontrado) || 0,
+                        imagen: card.querySelector("img")?.getAttribute("src") || ""
+                    };
+                }
+
+                agregarProducto(producto, 1);
+
+                alert(producto.nombre + " fue añadido al carrito.");
+                window.location.href = "carrito.html";
+            });
+        });
+    }
+
+    /* ---------------------------------------------------------
+       CARRITO
+       Mantiene las funciones usadas directamente por el HTML.
+       --------------------------------------------------------- */
+
+    window.cambiarCantidad = function (producto, cambio) {
+        const carrito = cargarCarrito();
+
+        if (!carrito[producto]) {
+            const base = buscarProducto(producto);
+
+            if (!base) {
+                return;
+            }
+
+            carrito[producto] = {
+                id: base.id,
+                nombre: base.nombre,
+                precio: base.precio,
+                imagen: base.imagen,
+                cantidad: 1
+            };
+        }
+
+        carrito[producto].cantidad += cambio;
+
+        if (carrito[producto].cantidad < 1) {
+            carrito[producto].cantidad = 1;
+        }
+
+        guardarCarrito(carrito);
+        actualizarCarritoVisual();
+    };
+
+    function actualizarCarritoVisual() {
+        const carritoGuardado = cargarCarrito();
+
+        /*
+         * Los tres productos originales del HTML siguen visibles.
+         * Si existe una cantidad guardada, se utiliza.
+         */
+        ["manzanas", "platanos", "naranjas"].forEach(id => {
+            const elemento = document.getElementById("cantidad-" + id);
+
+            if (elemento && carritoGuardado[id]) {
+                elemento.textContent = carritoGuardado[id].cantidad;
+            }
+        });
+
+        actualizarTotal();
+    }
+
+    window.actualizarTotal = function () {
+        const elementoTotal = document.getElementById("totalCarrito");
+
+        if (!elementoTotal) {
+            return;
+        }
+
+        /*
+         * Si el carrito está vacío en localStorage, se conserva
+         * la demostración original del HTML: 1 de cada producto.
+         */
+        const carritoGuardado = cargarCarrito();
+
+        let total = 0;
+
+        if (Object.keys(carritoGuardado).length === 0) {
+            total = 100 + 120 + 150;
+        } else {
+            Object.values(carritoGuardado).forEach(item => {
+                total += Number(item.precio) * Number(item.cantidad);
+            });
+        }
+
+        elementoTotal.textContent = formatearPrecio(total);
+    };
+
+    window.pagar = function () {
+        const total = document.getElementById("totalCarrito");
+
+        if (!total) {
+            alert("No se pudo calcular el total.");
+            return;
+        }
+
+        alert("Pedido listo para continuar con el proceso de pago.\nTotal: " + total.textContent);
+    };
+
+    function prepararCupon() {
+        const input = document.getElementById("cupon");
+
+        if (!input) {
+            return;
+        }
+
+        const boton = input.parentElement?.querySelector("button");
+
+        if (!boton) {
+            return;
+        }
+
+        boton.addEventListener("click", function () {
+            const codigo = input.value.trim().toUpperCase();
+
+            if (!codigo) {
+                alert("Ingresa un código de cupón.");
+                return;
+            }
+
+            if (codigo === "HUERTO10") {
+                alert("Cupón aplicado: 10% de descuento.");
+            } else {
+                alert("El cupón ingresado no es válido.");
+            }
+        });
+    }
+
+    /* ---------------------------------------------------------
+       DETALLE DE PRODUCTO
+       --------------------------------------------------------- */
+
+    const productosDetalle = [
+        {
+            nombre: "Manzanas",
+            precio: 100,
+            imagen: "img/manzana.jpg",
+            descripcion: "Las manzanas son una fruta deliciosa y versátil, apreciada en todo el mundo por su sabor refrescante y sus numerosos beneficios para la salud."
+        },
+        {
+            nombre: "Plátanos",
+            precio: 120,
+            imagen: "img/banana.jpg",
+            descripcion: "Los plátanos son una fruta nutritiva y práctica, conocida por su sabor dulce y su aporte de energía."
+        },
+        {
+            nombre: "Naranjas",
+            precio: 150,
+            imagen: "img/naranja2.jpg",
+            descripcion: "Las naranjas son una fruta refrescante y jugosa, ideal para consumir directamente o preparar deliciosos jugos naturales."
+        },
+        {
+            nombre: "Zanahorias",
+            precio: 100,
+            imagen: "img/zanahoria.jpg",
+            descripcion: "Las zanahorias son un alimento versátil que puede disfrutarse fresco, cocido o como parte de diferentes preparaciones saludables."
+        },
+        {
+            nombre: "Espinacas",
+            precio: 130,
+            imagen: "img/espinaca3.jpg",
+            descripcion: "Las espinacas son una verdura nutritiva y versátil que puede utilizarse en ensaladas, batidos y diferentes recetas."
+        },
+        {
+            nombre: "Pimientos",
+            precio: 180,
+            imagen: "img/pimiento2.jpg",
+            descripcion: "Los pimientos aportan color y sabor a las comidas y pueden utilizarse tanto crudos como cocinados."
+        },
+        {
+            nombre: "Miel",
+            precio: 250,
+            imagen: "img/miel.jpg",
+            descripcion: "La miel es un producto natural de sabor dulce que puede utilizarse para acompañar alimentos y preparar diferentes recetas."
+        }
+    ];
+
+    let productoActual = productosDetalle[0];
+
+    function mostrarProductosRelacionadosNuevo() {
+        const contenedor = document.getElementById("productosRelacionados");
+
+        if (!contenedor) {
+            return;
+        }
+
+        contenedor.innerHTML = "";
+
+        productosDetalle
+            .filter(producto => producto.nombre !== productoActual.nombre)
+            .slice(0, 5)
+            .forEach(producto => {
+                const columna = document.createElement("div");
+                columna.className = "col";
+
+                columna.innerHTML = `
+                    <div class="card h-100">
+                        <img src="${producto.imagen}"
+                             class="card-img-top"
+                             alt="${producto.nombre}">
+                        <div class="card-body">
+                            <h3 class="h6 card-title">${producto.nombre}</h3>
+                            <p class="fw-semibold mb-2">${formatearPrecio(producto.precio)}</p>
+                            <button type="button"
+                                    class="btn btn-outline-success btn-sm w-100">
+                                Ver producto
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                columna.querySelector("button").addEventListener("click", function () {
+                    seleccionarProductoNuevo(producto.nombre);
+                });
+
+                contenedor.appendChild(columna);
+            });
+    }
+
+    function seleccionarProductoNuevo(nombre) {
+        const producto = productosDetalle.find(item => item.nombre === nombre);
+
+        if (!producto) {
+            return;
+        }
+
+        productoActual = producto;
+
+        const nombreElemento = document.getElementById("nombreProducto");
+        const precioElemento = document.getElementById("precioProducto");
+        const descripcionElemento = document.getElementById("descripcionProducto");
+        const breadcrumb = document.getElementById("breadcrumbProducto");
+        const imagen = document.getElementById("imagenPrincipal");
+
+        if (nombreElemento) nombreElemento.textContent = producto.nombre;
+        if (precioElemento) precioElemento.textContent = formatearPrecio(producto.precio);
+        if (descripcionElemento) descripcionElemento.textContent = producto.descripcion;
+        if (breadcrumb) breadcrumb.textContent = producto.nombre;
+
+        if (imagen) {
+            imagen.src = producto.imagen;
+            imagen.alt = producto.nombre;
+        }
+
+        mostrarProductosRelacionadosNuevo();
+    }
+
+    window.seleccionarProducto = seleccionarProductoNuevo;
+
+    window.cambiarImagen = function (ruta) {
+        const imagen = document.getElementById("imagenPrincipal");
+
+        if (!imagen) {
+            return;
+        }
+
+        const imagenAnterior = imagen.src;
+
+        imagen.onerror = function () {
+            imagen.onerror = null;
+            imagen.src = imagenAnterior;
+            alert("La imagen seleccionada no está disponible.");
+        };
+
+        imagen.src = ruta;
+    };
+
+    window.agregarAlCarrito = function () {
+        const cantidadElemento = document.getElementById("cantidad");
+        const cantidad = cantidadElemento ? Number(cantidadElemento.value) || 1 : 1;
+
+        const producto = {
+            id: productoActual.nombre
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, ""),
+            nombre: productoActual.nombre,
+            precio: productoActual.precio,
+            imagen: productoActual.imagen
+        };
+
+        agregarProducto(producto, cantidad);
+
+        alert(
+            cantidad + " x " +
+            productoActual.nombre +
+            " fue añadido al carrito."
+        );
+    };
+
+    function prepararDetalle() {
+        if (!document.getElementById("productosRelacionados")) {
+            return;
+        }
+
+        mostrarProductosRelacionadosNuevo();
+    }
+
+    /* ---------------------------------------------------------
+       REGISTRO
+       --------------------------------------------------------- */
+
+    function prepararRegistro() {
+        const formulario = document.querySelector("form");
+
+        if (!formulario || !document.getElementById("confirmarContrasena")) {
+            return;
+        }
+
+        formulario.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const nombre = document.getElementById("nombre");
+            const correo = document.getElementById("correo");
+            const confirmar = document.getElementById("confirmarContrasena");
+
+            /*
+             * El HTML original tiene un pequeño error en el atributo
+             * de la contraseña: idimg/manzana2.jpg="contrasena".
+             * Por eso buscamos el primer input de tipo password.
+             */
+            const contrasena = formulario.querySelector('input[type="password"]');
+
+            if (!nombre?.value.trim() || !correo?.value.trim() ||
+                !contrasena?.value || !confirmar?.value) {
+                alert("Completa los campos obligatorios.");
+                return;
+            }
+
+            if (contrasena.value !== confirmar.value) {
+                alert("Las contraseñas no coinciden.");
+                return;
+            }
+
+            alert("Usuario registrado correctamente.");
+            formulario.reset();
+        });
+    }
+
+    /* ---------------------------------------------------------
+       ADMINISTRACIÓN
+       --------------------------------------------------------- */
+
+    window.nuevoUsuario = function () {
+        alert("Abrir formulario para crear un nuevo usuario.");
+    };
+
+    window.editarUsuario = function (id) {
+        alert("Editar usuario con ID: " + id);
+    };
+
+    window.eliminarUsuario = function (id) {
+        if (confirm("¿Deseas eliminar el usuario " + id + "?")) {
+            alert("Usuario eliminado.");
+        }
+    };
+
+    window.filtrarUsuarios = function () {
+        const filtroElemento = document.getElementById("filtroUsuarios");
+        const tabla = document.getElementById("tablaUsuarios");
+
+        if (!filtroElemento || !tabla) {
+            return;
+        }
+
+        const filtro = filtroElemento.value;
+        const usuarios = tabla.querySelectorAll("tr[data-rol]");
+
+        usuarios.forEach(usuario => {
+            const rol = usuario.getAttribute("data-rol");
+            usuario.style.display =
+                filtro === "todos" || rol === filtro ? "" : "none";
+        });
+    };
+
+    /* ---------------------------------------------------------
+       INICIALIZACIÓN
+       --------------------------------------------------------- */
+
+    document.addEventListener("DOMContentLoaded", function () {
+        prepararCatalogo();
+        prepararDetalle();
+        prepararRegistro();
+        prepararCupon();
+
+        if (document.getElementById("totalCarrito")) {
+            actualizarCarritoVisual();
+        }
+    });
+
+})();
