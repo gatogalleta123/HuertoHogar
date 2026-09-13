@@ -169,7 +169,7 @@
                                     Nombre completo
                                 </label>
     
-                                <input type="text" class="form-control" id="nombre" required>
+                                <input type="text" class="form-control" id="nombre">
     
                             </div>
     
@@ -181,7 +181,7 @@
                                     Correo electrónico
                                 </label>
     
-                                <input type="email" class="form-control" id="correo" required>
+                                <input type="email" class="form-control" id="correo">
     
                             </div>
     
@@ -193,7 +193,7 @@
                                     RUT
                                 </label>
     
-                                <input type="text" class="form-control" id="rut" placeholder="12.345.678-9" required>
+                                <input type="text" class="form-control" id="rut" placeholder="19011022K">
     
                             </div>
     
@@ -217,7 +217,7 @@
                                     Contraseña
                                 </label>
     
-                                <input type="password" class="form-control" id="password" required>
+                                <input type="password" class="form-control" id="password">
     
                             </div>
     
@@ -229,7 +229,7 @@
                                     Confirmar contraseña
                                 </label>
     
-                                <input type="password" class="form-control" id="confirmarPassword" required>
+                                <input type="password" class="form-control" id="confirmarPassword">
     
                             </div>
     
@@ -244,7 +244,7 @@
                                         Rol
                                     </label>
     
-                                    <select id="rol" class="form-select" required>
+                                    <select id="rol" class="form-select">
     
                                         <option value="">
                                             Seleccione un rol
@@ -256,6 +256,10 @@
     
                                         <option value="administrador">
                                             Administrador
+                                        </option>
+
+                                        <option value="vendedor">
+                                            Vendedor
                                         </option>
     
                                     </select>
@@ -270,7 +274,7 @@
                                         Estado
                                     </label>
     
-                                    <select id="estado" class="form-select" required>
+                                    <select id="estado" class="form-select">
     
                                         <option value="">
                                             Seleccione un estado
@@ -288,6 +292,33 @@
     
                                 </div>
     
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="apellidos" class="form-label">Apellidos</label>
+                                <input type="text" class="form-control" id="apellidos">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" id="fechaNacimiento">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="region" class="form-label">Región</label>
+                                <select id="region" class="form-select">
+                                    <option value="">Seleccione una región</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="comuna" class="form-label">Comuna</label>
+                                <input type="text" class="form-control" id="comuna" placeholder="Ingrese la comuna">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="direccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" id="direccion">
                             </div>
     
     

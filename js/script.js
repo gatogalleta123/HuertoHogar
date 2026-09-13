@@ -9,6 +9,78 @@
 
     const STORAGE_KEY = "huertoHogarCarrito";
     const SESSION_KEY = "huertoHogarSesionActiva";
+    const USERS_KEY = "huertoHogarUsuarios";
+
+    const regiones = [
+        "Arica y Parinacota", "Tarapaca", "Antofagasta", "Atacama", "Coquimbo",
+        "Valparaiso", "Region Metropolitana de Santiago", "O'Higgins", "Maule",
+        "Nuble", "Biobio", "La Araucania", "Los Rios", "Los Lagos", "Aysen",
+        "Magallanes y de la Antartica Chilena"
+    ];
+
+    const dominiosPermitidos = ["duoc.cl", "profesor.duoc.cl", "gmail.com"];
+
+    function correoPermitido(valor, obligatorio = true) {
+        const correo = String(valor || "").trim();
+        const dominio = correo.split("@")[1]?.toLowerCase();
+        return (!obligatorio && !correo) ||
+            (correo.length <= 100 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo) && dominiosPermitidos.includes(dominio));
+    }
+
+    function campoValido(valor, maximo, obligatorio = true) {
+        const texto = String(valor || "").trim();
+        return (!obligatorio && !texto) || (texto.length > 0 && texto.length <= maximo);
+    }
+
+    function contrasenaValida(valor) {
+        const texto = String(valor || "");
+        return texto.length >= 4 && texto.length <= 10;
+    }
+
+    function validarRun(valor) {
+        const run = String(valor || "").trim().toUpperCase();
+
+        if (!/^[0-9]{6,8}[0-9K]$/.test(run)) {
+            return false;
+        }
+
+        const cuerpo = run.slice(0, -1).split("").reverse();
+        const suma = cuerpo.reduce((total, digito, indice) =>
+            total + Number(digito) * ((indice % 6) + 2), 0);
+        const resto = 11 - (suma % 11);
+        const verificador = resto === 11 ? "0" : resto === 10 ? "K" : String(resto);
+
+        return verificador === run.slice(-1);
+    }
+
+    function mostrarErrores(formulario, errores) {
+        formulario.querySelectorAll(".alert-validacion").forEach(elemento => elemento.remove());
+
+        if (errores.length === 0) {
+            return false;
+        }
+
+        const mensaje = document.createElement("div");
+        mensaje.className = "alert alert-danger alert-validacion mt-3";
+        mensaje.setAttribute("role", "alert");
+        mensaje.textContent = errores.join(" ");
+        formulario.prepend(mensaje);
+        return true;
+    }
+
+    function cargarUsuarios() {
+        try {
+            return JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function guardarUsuario(usuario) {
+        const usuarios = cargarUsuarios();
+        usuarios.push(usuario);
+        localStorage.setItem(USERS_KEY, JSON.stringify(usuarios));
+    }
 
     const productosHuerto = [
         { id: "manzanas", nombre: "Manzanas Fuji", precio: 1200, imagen: "img/manzana2.jpg" },
@@ -107,27 +179,20 @@
 
         const correo = document.getElementById("correoLogin");
         const contrasena = document.getElementById("contrasena");
-        const boton = formulario.querySelector("button[type='submit']");
-        const mensaje = document.createElement("div");
-
-        mensaje.className = "alert d-none mt-3";
-        mensaje.setAttribute("role", "alert");
-        formulario.insertBefore(mensaje, boton.parentElement);
-
         formulario.addEventListener("submit", function (event) {
             event.preventDefault();
 
-            const correoValido = correo.value.includes("@") && correo.value.includes(".");
+            const errores = [];
 
-            if (!correoValido) {
-                mensaje.className = "alert alert-danger mt-3";
-                mensaje.textContent = "El correo no es válido. Ejemplo@ejemplo.cl";
-                return;
+            if (!correoPermitido(correo.value)) {
+                errores.push("El correo es obligatorio, debe tener máximo 100 caracteres y terminar en @duoc.cl, @profesor.duoc.cl o @gmail.com.");
             }
 
-            if (!contrasena.value.trim()) {
-                mensaje.className = "alert alert-danger mt-3";
-                mensaje.textContent = "Ingresa tu contraseña.";
+            if (!contrasenaValida(contrasena.value)) {
+                errores.push("La contraseña es obligatoria y debe tener entre 4 y 10 caracteres.");
+            }
+
+            if (mostrarErrores(formulario, errores)) {
                 return;
             }
 
@@ -205,6 +270,29 @@
         }, { once: true });
 
         instancia.show();
+    }
+
+    function renderizarProductos() {
+        const contenedor = document.getElementById("listaProductos");
+
+        if (!contenedor) {
+            return;
+        }
+
+        contenedor.innerHTML = productosHuerto.map(producto => `
+            <div class="col">
+                <div class="card h-100 bg-blanco">
+                    <img src="${producto.imagen}" class="card-img-top" alt="${producto.nombre}">
+                    <div class="card-body">
+                        <h4 class="card-title">${producto.nombre}</h4>
+                        <p class="card-text">Precio: ${formatearPrecio(producto.precio)} por unidad</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-success">
+                        <a href="carrito.html">Agregar al carrito</a>
+                    </div>
+                </div>
+            </div>
+        `).join("");
     }
 
     function prepararCatalogo() {
@@ -352,8 +440,29 @@
     }
 
     function actualizarCarritoVisual() {
+        sincronizarCarritoFijo();
         renderizarCarrito();
         actualizarTotal();
+    }
+
+    function sincronizarCarritoFijo() {
+        const carrito = cargarCarrito();
+
+        Object.keys({
+            manzanas: "cantidad-manzanas",
+            platanos: "cantidad-platanos",
+            naranjas: "cantidad-naranjas"
+        }).forEach(id => {
+            const elemento = document.getElementById({
+                manzanas: "cantidad-manzanas",
+                platanos: "cantidad-platanos",
+                naranjas: "cantidad-naranjas"
+            }[id]);
+
+            if (elemento) {
+                elemento.textContent = String(carrito[id]?.cantidad || 0);
+            }
+        });
     }
 
     window.actualizarTotal = function () {
@@ -589,7 +698,7 @@
        --------------------------------------------------------- */
 
     function prepararRegistro() {
-        const formulario = document.querySelector("form");
+        const formulario = document.getElementById("formRegistro");
 
         if (!formulario || !document.getElementById("confirmarContrasena")) {
             return;
@@ -609,18 +718,77 @@
              */
             const contrasena = formulario.querySelector('input[type="password"]');
 
-            if (!nombre?.value.trim() || !correo?.value.trim() ||
-                !contrasena?.value || !confirmar?.value) {
-                alert("Completa los campos obligatorios.");
+            const errores = [];
+
+            if (!campoValido(nombre?.value, 50)) {
+                errores.push("El nombre es obligatorio y debe tener máximo 50 caracteres.");
+            }
+
+            if (!correoPermitido(correo?.value)) {
+                errores.push("El correo debe tener máximo 100 caracteres y terminar en @duoc.cl, @profesor.duoc.cl o @gmail.com.");
+            }
+
+            if (!contrasenaValida(contrasena?.value)) {
+                errores.push("La contraseña debe tener entre 4 y 10 caracteres.");
+            }
+
+            if (contrasena?.value !== confirmar?.value) {
+                errores.push("Las contraseñas no coinciden.");
+            }
+
+            if (!formulario.querySelector("#region")?.value) {
+                errores.push("La región es obligatoria.");
+            }
+
+            if (mostrarErrores(formulario, errores)) {
                 return;
             }
 
-            if (contrasena.value !== confirmar.value) {
-                alert("Las contraseñas no coinciden.");
-                return;
-            }
-
+            guardarUsuario({
+                nombre: nombre.value.trim(),
+                apellidos: "",
+                correo: correo.value.trim().toLowerCase(),
+                contrasena: contrasena.value,
+                rol: "cliente",
+                region: formulario.querySelector("#region").value
+            });
             alert("Usuario registrado correctamente.");
+            formulario.reset();
+        });
+    }
+
+    function prepararContacto() {
+        const formulario = document.getElementById("formContacto");
+
+        if (!formulario) {
+            return;
+        }
+
+        formulario.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const nombre = document.getElementById("nombre_contacto");
+            const correo = document.getElementById("correo_contacto");
+            const mensaje = document.getElementById("mensaje");
+            const errores = [];
+
+            if (!campoValido(nombre?.value, 100)) {
+                errores.push("El nombre es obligatorio y debe tener máximo 100 caracteres.");
+            }
+
+            if (!correoPermitido(correo?.value, false)) {
+                errores.push("El correo debe tener máximo 100 caracteres y usar @duoc.cl, @profesor.duoc.cl o @gmail.com.");
+            }
+
+            if (!campoValido(mensaje?.value, 500)) {
+                errores.push("El comentario es obligatorio y debe tener máximo 500 caracteres.");
+            }
+
+            if (mostrarErrores(formulario, errores)) {
+                return;
+            }
+
+            alert("Mensaje enviado correctamente.");
             formulario.reset();
         });
     }
@@ -632,25 +800,130 @@
             return;
         }
 
+        prepararRegiones(formulario);
+
         formulario.addEventListener("submit", function (event) {
             event.preventDefault();
 
             const contrasena = document.getElementById("password");
             const confirmar = document.getElementById("confirmarPassword");
+            const rut = document.getElementById("rut");
+            const nombre = document.getElementById("nombre");
+            const apellidos = document.getElementById("apellidos");
+            const correo = document.getElementById("correo");
+            const direccion = document.getElementById("direccion");
+            const region = document.getElementById("region");
+            const rol = document.getElementById("rol");
+            const estado = document.getElementById("estado");
+            const errores = [];
 
-            if (!contrasena || !confirmar) {
+            if (!validarRun(rut?.value)) {
+                errores.push("El RUN debe tener entre 7 y 9 caracteres, sin puntos ni guion, y su dígito verificador debe ser correcto.");
+            }
+
+            if (!campoValido(nombre?.value, 50)) {
+                errores.push("El nombre es obligatorio y debe tener máximo 50 caracteres.");
+            }
+
+            if (!campoValido(apellidos?.value, 100)) {
+                errores.push("Los apellidos son obligatorios y deben tener máximo 100 caracteres.");
+            }
+
+            if (!correoPermitido(correo?.value)) {
+                errores.push("El correo es obligatorio y debe tener máximo 100 caracteres con un dominio permitido.");
+            }
+
+            if (!contrasenaValida(contrasena?.value)) {
+                errores.push("La contraseña debe tener entre 4 y 10 caracteres.");
+            }
+
+            if (contrasena?.value !== confirmar?.value) {
+                errores.push("Las contraseñas no coinciden.");
+            }
+
+            if (!region?.value || !campoValido(direccion?.value, 300)) {
+                errores.push("La región y la dirección son obligatorias; la dirección admite máximo 300 caracteres.");
+            }
+
+            if (!rol?.value || !["administrador", "cliente", "vendedor"].includes(rol.value)) {
+                errores.push("Selecciona un tipo de usuario válido.");
+            }
+
+            if (!estado?.value || !["activo", "inactivo"].includes(estado.value)) {
+                errores.push("Selecciona un estado válido.");
+            }
+
+            if (mostrarErrores(formulario, errores)) {
                 return;
             }
 
-            if (contrasena.value !== confirmar.value) {
-                alert("Las contraseñas no coinciden.");
-                return;
-            }
+            guardarUsuario({
+                rut: rut.value.toUpperCase(),
+                nombre: nombre.value.trim(),
+                apellidos: apellidos.value.trim(),
+                correo: correo.value.trim().toLowerCase(),
+                fechaNacimiento: document.getElementById("fechaNacimiento")?.value || "",
+                rol: rol.value,
+                estado: estado.value,
+                region: region.value,
+                direccion: direccion.value.trim()
+            });
 
             alert("Usuario registrado correctamente.");
             formulario.reset();
+            prepararRegiones(formulario);
         });
     }
+
+    function prepararRegiones(formulario) {
+        const region = formulario.querySelector("#region");
+
+        if (!region) {
+            return;
+        }
+
+        if (region.options.length <= 1) {
+            regiones.forEach(nombreRegion => {
+                const opcion = document.createElement("option");
+                opcion.value = nombreRegion;
+                opcion.textContent = nombreRegion;
+                region.appendChild(opcion);
+            });
+        }
+    }
+
+    window.validarProducto = function (producto) {
+        const errores = [];
+        const codigo = String(producto?.codigo || "").trim();
+        const nombre = String(producto?.nombre || "").trim();
+        const descripcion = String(producto?.descripcion || "").trim();
+        const precio = Number(producto?.precio);
+        const stock = Number(producto?.stock);
+        const stockCritico = producto?.stockCritico === "" || producto?.stockCritico === undefined
+            ? null
+            : Number(producto.stockCritico);
+
+        if (codigo.length < 3) errores.push("El código de producto es obligatorio y debe tener al menos 3 caracteres.");
+        if (!campoValido(nombre, 100)) errores.push("El nombre del producto es obligatorio y admite máximo 100 caracteres.");
+        if (descripcion.length > 500) errores.push("La descripción admite máximo 500 caracteres.");
+        if (!Number.isFinite(precio) || precio < 0) errores.push("El precio es obligatorio y debe ser un número mayor o igual a 0.");
+        if (!Number.isInteger(stock) || stock < 0) errores.push("El stock es obligatorio y debe ser un número entero mayor o igual a 0.");
+        if (stockCritico !== null && (!Number.isInteger(stockCritico) || stockCritico < 0)) {
+            errores.push("El stock crítico debe ser un número entero mayor o igual a 0.");
+        }
+        if (!String(producto?.categoria || "").trim()) errores.push("La categoría es obligatoria.");
+
+        return { valido: errores.length === 0, errores };
+    };
+
+    window.alertaStockCritico = function (stock, stockCritico) {
+        if (Number.isInteger(Number(stockCritico)) && Number(stock) <= Number(stockCritico)) {
+            alert("Alerta: el stock está igual o por debajo del stock crítico.");
+            return true;
+        }
+
+        return false;
+    };
 
     /* ---------------------------------------------------------
        ADMINISTRACIÓN
@@ -693,10 +966,12 @@
        --------------------------------------------------------- */
 
     document.addEventListener("DOMContentLoaded", function () {
+        renderizarProductos();
         prepararCatalogo();
         prepararDetalle();
         prepararRegistro();
         prepararNuevoUsuario();
+        prepararContacto();
         prepararCupon();
         prepararLogin();
         actualizarBotonSesion();
