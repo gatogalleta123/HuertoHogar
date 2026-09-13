@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Inicio</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+    </style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+
+<body>
+        <!-- Componente: Listado de Usuarios -->
+        
+        <div class="container-fluid p-0">
+        
+            <div class="d-flex min-vh-100">
+        
+        
+                <!-- Barra lateral -->
+                <div class="bg-light border-end p-3" style="width: 220px;">
+        
+                    <!-- Logo -->
+                    <div class="mb-4 pb-3 border-bottom">
+                        <h1 class="mb-0">
+                            🌱 Huerto Hogar
+                        </h1>
+                    </div>
+        
+        
+                    <!-- Menú -->
+                    <ul class="nav nav-pills flex-column gap-2">
+        
+                        <li class="nav-item">
+                            <a href="#" class="nav-link text-dark">
+                                📊 Dashboard
+                            </a>
+                        </li>
+        
+                        <li class="nav-item">
+                            <a href="#" class="nav-link text-dark">
+                                📦 Productos
+                            </a>
+                        </li>
+        
+                        <li class="nav-item">
+                            <a href="#" class="nav-link text-dark">
+                                🛒 Pedidos
+                            </a>
+                        </li>
+        
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active">
+                                👤 Usuarios
+                            </a>
+                        </li>
+        
+                        <li class="nav-item">
+                            <a href="#" class="nav-link text-dark">
+                                👥 Clientes
+                            </a>
+                        </li>
+        
+                    </ul>
+        
+        
+                    <!-- Menú inferior -->
+                    <div class="mt-5 pt-5">
+        
+                        <ul class="nav nav-pills flex-column gap-2">
+        
+                            <li class="nav-item">
+                                <a href="#" class="nav-link text-dark">
+                                    ⚙️ Configuración
+                                </a>
+                            </li>
+        
+                            <li class="nav-item">
+                                <a href="#" class="nav-link text-dark">
+                                    🔔 Notificaciones
+                                </a>
+                            </li>
+        
+                            <li class="nav-item">
+                                <a href="#" class="nav-link text-dark">
+                                    🔍 Buscar
+                                </a>
+                            </li>
+        
+                            <li class="nav-item">
+                                <a href="#" class="nav-link text-dark">
+                                    🚪 Cerrar sesión
+                                </a>
+                            </li>
+        
+                        </ul>
+        
+                    </div>
+        
+        
+                    <!-- Usuario -->
+                    <div class="border-top mt-4 pt-3">
+        
+                        <div class="d-flex align-items-center gap-2">
+        
+                            <span class="fs-5">👤</span>
+        
+                            <div>
+                                <small class="fw-semibold d-block">
+                                    Administrador
+                                </small>
+        
+                                <small class="text-muted">
+                                    Admin
+                                </small>
+                            </div>
+        
+                        </div>
+        
+                    </div>
+        
+                </div>
+        
+        
+                <!-- Contenido -->
+                <main class="flex-grow-1 p-4">
+        
+                    <!-- Título y botón -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+        
+                        <h1 class="h3 mb-0">
+                            Usuarios
+                        </h1>
+        
+                        <button type="button" class="btn btn-success" onclick="nuevoUsuario()">
+                            Nuevo usuario
+                        </button>
+        
+                    </div>
+        
+        
+                    <!-- Filtro -->
+                    <div class="mb-3">
+        
+                        <label for="filtroUsuarios" class="form-label">
+                            Filtrar usuarios
+                        </label>
+        
+                        <select id="filtroUsuarios" class="form-select" onchange="filtrarUsuarios()">
+                            <option value="todos">
+                                Todos los usuarios
+                            </option>
+        
+                            <option value="administrador">
+                                Administradores
+                            </option>
+        
+                            <option value="cliente">
+                                Clientes
+                            </option>
+        
+                        </select>
+        
+                    </div>
+        
+        
+                    <!-- Tabla -->
+                    <div class="table-responsive">
+        
+                        <table class="table table-striped table-hover align-middle">
+        
+                            <thead class="table-light">
+        
+                                <tr>
+        
+                                    <th>ID</th>
+        
+                                    <th>Nombre</th>
+        
+                                    <th>Correo</th>
+        
+                                    <th>Rol</th>
+        
+                                    <th>Estado</th>
+        
+                                    <th>Acciones</th>
+        
+                                </tr>
+        
+                            </thead>
+        
+        
+                            <tbody id="tablaUsuarios">
+        
+                                <tr data-rol="cliente">
+        
+                                    <td>001</td>
+        
+                                    <td>
+                                        Juan Pérez
+                                    </td>
+        
+                                    <td>
+                                        juan@email.com
+                                    </td>
+        
+                                    <td>
+                                        Cliente
+                                    </td>
+        
+                                    <td>
+                                        <span class="badge text-bg-success">
+                                            Activo
+                                        </span>
+                                    </td>
+        
+                                    <td>
+        
+                                        <button type="button" class="btn btn-sm btn-outline-success"
+                                            onclick="editarUsuario('001')">
+                                            Editar
+                                        </button>
+        
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="eliminarUsuario('001')">
+                                            Eliminar
+                                        </button>
+        
+                                    </td>
+        
+                                </tr>
+        
+        
+                                <tr data-rol="cliente">
+        
+                                    <td>002</td>
+        
+                                    <td>
+                                        María González
+                                    </td>
+        
+                                    <td>
+                                        maria@email.com
+                                    </td>
+        
+                                    <td>
+                                        Cliente
+                                    </td>
+        
+                                    <td>
+                                        <span class="badge text-bg-success">
+                                            Activo
+                                        </span>
+                                    </td>
+        
+                                    <td>
+        
+                                        <button type="button" class="btn btn-sm btn-outline-success"
+                                            onclick="editarUsuario('002')">
+                                            Editar
+                                        </button>
+        
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="eliminarUsuario('002')">
+                                            Eliminar
+                                        </button>
+        
+                                    </td>
+        
+                                </tr>
+        
+        
+                                <tr data-rol="administrador">
+        
+                                    <td>003</td>
+        
+                                    <td>
+                                        Administrador
+                                    </td>
+        
+                                    <td>
+                                        admin@huertohogar.cl
+                                    </td>
+        
+                                    <td>
+                                        Administrador
+                                    </td>
+        
+                                    <td>
+                                        <span class="badge text-bg-success">
+                                            Activo
+                                        </span>
+                                    </td>
+        
+                                    <td>
+        
+                                        <button type="button" class="btn btn-sm btn-outline-success"
+                                            onclick="editarUsuario('003')">
+                                            Editar
+                                        </button>
+        
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="eliminarUsuario('003')">
+                                            Eliminar
+                                        </button>
+        
+                                    </td>
+        
+                                </tr>
+        
+        
+                                <tr data-rol="cliente">
+        
+                                    <td>004</td>
+        
+                                    <td>
+                                        Pedro Soto
+                                    </td>
+        
+                                    <td>
+                                        pedro@email.com
+                                    </td>
+        
+                                    <td>
+                                        Cliente
+                                    </td>
+        
+                                    <td>
+                                        <span class="badge text-bg-secondary">
+                                            Inactivo
+                                        </span>
+                                    </td>
+        
+                                    <td>
+        
+                                        <button type="button" class="btn btn-sm btn-outline-success"
+                                            onclick="editarUsuario('004')">
+                                            Editar
+                                        </button>
+        
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="eliminarUsuario('004')">
+                                            Eliminar
+                                        </button>
+        
+                                    </td>
+        
+                                </tr>
+        
+        
+                                <tr data-rol="cliente">
+        
+                                    <td>005</td>
+        
+                                    <td>
+                                        Camila Rojas
+                                    </td>
+        
+                                    <td>
+                                        camila@email.com
+                                    </td>
+        
+                                    <td>
+                                        Cliente
+                                    </td>
+        
+                                    <td>
+                                        <span class="badge text-bg-success">
+                                            Activo
+                                        </span>
+                                    </td>
+        
+                                    <td>
+        
+                                        <button type="button" class="btn btn-sm btn-outline-success"
+                                            onclick="editarUsuario('005')">
+                                            Editar
+                                        </button>
+        
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="eliminarUsuario('005')">
+                                            Eliminar
+                                        </button>
+        
+                                    </td>
+        
+                                </tr>
+        
+                            </tbody>
+        
+                        </table>
+        
+                    </div>
+        
+        
+                    <!-- Paginación -->
+                    <nav aria-label="Navegación de usuarios">
+        
+                        <ul class="pagination justify-content-center">
+        
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">
+                                    Anterior
+                                </a>
+                            </li>
+        
+                            <li class="page-item active">
+                                <a class="page-link" href="#">
+                                    1
+                                </a>
+                            </li>
+        
+                            <li class="page-item">
+                                <a class="page-link" href="#">
+                                    2
+                                </a>
+                            </li>
+        
+                            <li class="page-item">
+                                <a class="page-link" href="#">
+                                    3
+                                </a>
+                            </li>
+        
+                            <li class="page-item">
+                                <a class="page-link" href="#">
+                                    Siguiente
+                                </a>
+                            </li>
+        
+                        </ul>
+        
+                    </nav>
+        
+                </main>
+        
+            </div>
+        
+        </div>
+</body>
+
+
+
+</html>
