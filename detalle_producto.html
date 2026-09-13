@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HuertoHogar - Carrito</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+    </style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+
+<!--HEADER-->
+<header class="p-3 mb-3 ">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"> <!-- Aqui va la imagen (logo)<a href="/"
+                class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"> <svg
+                    class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                    <use xlink:href="#bootstrap"></use>
+                </svg> </a>-->
+            <h1 class="logo-prov">Huerto Hogar</h1>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
+                <li><a href="#" class="nav-link px-2 link-body-emphasis">Productos</a></li>
+                <li><a href="#" class="nav-link px-2 link-body-emphasis">Nosotros</a></li>
+                <li><a href="#" class="nav-link px-2 link-body-emphasis">Blogs</a></li>
+                <li><a href="#" class="nav-link px-2 link-body-emphasis">Contactos</a></li>
+            </ul>
+            <div class="dropdown text-end"> <a href="#"
+                    class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false"> <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32"
+                        class="rounded-circle"> </a>
+                <ul class="dropdown-menu text-small" style="">
+                    <li><a class="dropdown-item" href="#">Iniciar Sesión/ Registrarse</a></li>
+                    <li><a class="dropdown-item" href="#">Carrito</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="#">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+<!--HEADER-->
+
+<body>
+<!--
+*--------------------------------------------*
+                VISTA PRODUCTO
+*--------------------------------------------*
+-->
+<!-- Componente: Vista detalle de producto -->
+
+<div class="container py-4">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#" class="text-primary">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="#" class="text-primary">Productos</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" id="breadcrumbProducto">
+                Manzanas
+            </li>
+        </ol>
+    </nav>
+
+
+    <!-- Detalle del producto -->
+    <div class="row g-5">
+
+        <!-- Galería de imágenes -->
+        <div class="col-lg-7">
+
+            <!-- Imagen principal -->
+            <div class="border rounded p-2 mb-3">
+                <img id="imagenPrincipal" src="img/manzana.jpg" alt="Manzanas" class="img-fluid w-100"
+                    style="height: 430px; object-fit: cover;">
+            </div>
+
+            <!-- Imágenes pequeñas -->
+            <div class="d-flex gap-2">
+
+                <button type="button" class="btn p-0 border border-primary" onclick="cambiarImagen('img/manzana.jpg')">
+                    <img src="img/manzana.jpg" alt="Manzanas" style="width: 75px; height: 60px; object-fit: cover;">
+                </button>
+
+                <button type="button" class="btn p-0 border" onclick="cambiarImagen('img/productos/manzanas-2.jpg')">
+                    <img src="img/manzana.jpg" alt="Manzanas" style="width: 75px; height: 60px; object-fit: cover;">
+                </button>
+
+                <button type="button" class="btn p-0 border" onclick="cambiarImagen('img/productos/manzanas-3.jpg')">
+                    <img src="img/manzana.jpg" alt="Manzanas" style="width: 75px; height: 60px; object-fit: cover;">
+                </button>
+
+            </div>
+        </div>
+
+
+        <!-- Información del producto -->
+        <div class="col-lg-5">
+
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0" id="nombreProducto">
+                    Manzanas
+                </h1>
+
+                <span class="h4 mb-0" id="precioProducto">
+                    $100
+                </span>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Descripción -->
+            <p id="descripcionProducto">
+                Las manzanas son una fruta deliciosa y versátil, apreciada
+                en todo el mundo por su sabor refrescante y sus numerosos
+                beneficios para la salud. Disponibles en una variedad de
+                colores, desde el rojo vibrante hasta el verde brillante y
+                el amarillo dorado, las manzanas son una opción perfecta
+                para cualquier ocasión, ya sea como un refrigerio saludable
+                o como parte de una receta.
+            </p>
+
+            <hr class="my-4">
+
+
+            <!-- Cantidad -->
+            <div class="row align-items-center mb-4">
+
+                <div class="col-4">
+                    <label for="cantidad" class="form-label fw-semibold mb-0">
+                        Cantidad
+                    </label>
+                </div>
+
+                <div class="col-8">
+                    <select id="cantidad" class="form-select">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+            </div>
+
+
+            <!-- Botón agregar al carrito -->
+            <button type="button" class="btn btn-success w-100" onclick="agregarAlCarrito()">
+                Añadir al carrito
+            </button>
+
+            <hr class="my-4">
+
+        </div>
+
+    </div>
+
+
+    <!-- Productos relacionados -->
+    <section class="mt-5 pt-4 border-top">
+
+        <h2 class="h6 mb-4">
+            Productos relacionados
+        </h2>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4" id="productosRelacionados">
+
+            <!-- Los productos se generan automáticamente con JavaScript -->
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- JavaScript del componente -->
+<script>
+
+    /*
+     * Lista de productos del huerto.
+     *
+     * Puedes cambiar las rutas de las imágenes cuando
+     * tengas las imágenes definitivas.
+     */
+    const productos = [
+        {
+            nombre: "Manzanas",
+            precio: 100,
+            imagen: "img/manzana.jpg",
+            descripcion:
+                "Las manzanas son una fruta deliciosa y versátil, apreciada en todo el mundo por su sabor refrescante y sus numerosos beneficios para la salud."
+        },
+        {
+            nombre: "Plátanos",
+            precio: 120,
+            imagen: "img/banana.jpg",
+            descripcion:
+                "Los plátanos son una fruta nutritiva y práctica, conocida por su sabor dulce y su aporte de energía."
+        },
+        {
+            nombre: "Naranjas",
+            precio: 150,
+            imagen: "img/naranja2.jpg",
+            descripcion:
+                "Las naranjas son una fruta refrescante y jugosa, ideal para consumir directamente o preparar deliciosos jugos naturales."
+        },
+        {
+            nombre: "Zanahorias",
+            precio: 100,
+            imagen: "img/zanahoria.jpg",
+            descripcion:
+                "Las zanahorias son un alimento versátil que puede disfrutarse fresco, cocido o como parte de diferentes preparaciones saludables."
+        },
+        {
+            nombre: "Espinacas",
+            precio: 130,
+            imagen: "img/espinaca3.jpg",
+            descripcion:
+                "Las espinacas son una verdura nutritiva y versátil que puede utilizarse en ensaladas, batidos y diferentes recetas."
+        },
+        {
+            nombre: "Pimientos",
+            precio: 180,
+            imagen: "img/pimiento2.jpg",
+            descripcion:
+                "Los pimientos aportan color y sabor a las comidas y pueden utilizarse tanto crudos como cocinados."
+        },
+        {
+            nombre: "Miel",
+            precio: 250,
+            imagen: "img/miel.jpg",
+            descripcion:
+                "La miel es un producto natural de sabor dulce que puede utilizarse para acompañar alimentos y preparar diferentes recetas."
+        }
+    ];
+
+
+    // Producto seleccionado actualmente
+    let productoActual = productos[0];
+
+
+    /*
+     * Muestra los cinco productos que NO corresponden
+     * al producto que estamos viendo actualmente.
+     */
+    function mostrarProductosRelacionados() {
+
+        const contenedor = document.getElementById("productosRelacionados");
+
+        contenedor.innerHTML = "";
+
+        const relacionados = productos
+            .filter(producto => producto.nombre !== productoActual.nombre)
+            .slice(0, 5);
+
+
+        relacionados.forEach(producto => {
+
+            contenedor.innerHTML += `
+                <div class="col">
+
+                    <div class="card h-100">
+
+                        <img
+                            src="${producto.imagen}"
+                            class="card-img-top"
+                            alt="${producto.nombre}"
+                            style="height: 150px; object-fit: cover;"
+                        >
+
+                        <div class="card-body">
+
+                            <h3 class="h6 card-title">
+                                ${producto.nombre}
+                            </h3>
+
+                            <p class="fw-semibold mb-2">
+                                $${producto.precio}
+                            </p>
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-success btn-sm w-100"
+                                onclick="seleccionarProducto('${producto.nombre}')"
+                            >
+                                Ver producto
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+        });
+    }
+
+
+    /*
+     * Permite seleccionar otro producto desde
+     * la sección de productos relacionados.
+     */
+    function seleccionarProducto(nombre) {
+
+        const producto = productos.find(
+            producto => producto.nombre === nombre
+        );
+
+        if (!producto) {
+            return;
+        }
+
+        productoActual = producto;
+
+        document.getElementById("nombreProducto").textContent =
+            producto.nombre;
+
+        document.getElementById("precioProducto").textContent =
+            "$" + producto.precio;
+
+        document.getElementById("descripcionProducto").textContent =
+            producto.descripcion;
+
+        document.getElementById("breadcrumbProducto").textContent =
+            producto.nombre;
+
+        document.getElementById("imagenPrincipal").src =
+            producto.imagen;
+
+        document.getElementById("imagenPrincipal").alt =
+            producto.nombre;
+
+        mostrarProductosRelacionados();
+    }
+
+
+    /*
+     * Cambia la imagen grande de la galería.
+     */
+    function cambiarImagen(ruta) {
+
+        document.getElementById("imagenPrincipal").src = ruta;
+
+    }
+
+
+    /*
+     * Función temporal para el botón del carrito.
+     *
+     * Más adelante aquí puedes conectar la lógica
+     * real del carrito.
+     */
+    function agregarAlCarrito() {
+
+        const cantidad =
+            document.getElementById("cantidad").value;
+
+        alert(
+            cantidad +
+            " x " +
+            productoActual.nombre +
+            " añadido al carrito."
+        );
+    }
+
+
+    // Cargar productos relacionados al iniciar el componente
+    mostrarProductosRelacionados();
+
+</script>
+<!--
+*--------------------------------------------*
+                VISTA PRODUCTO
+*--------------------------------------------*
+-->
+</body>
+
+<!--FOOTER-->
+<footer class="py-5">
+    <div class="row">
+        <div class="col-6 col-md-2 mb-3">
+            <h5>Section</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Contacto</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Nosotros</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Blog</a></li>
+
+            </ul>
+        </div>
+        <div class="col-md-5 offset-md-1 mb-3">
+            <form>
+                <h5>Suscríbete a nuestro newsletter</h5>
+                <p>Descubre lo que tenemos para tí cada mes</p>
+                <div class="d-flex flex-column flex-sm-row w-100 gap-2"> <label for="newsletter1"
+                        class="visually-hidden">Email personal</label> <input id="newsletter1" type="email"
+                        class="form-control" placeholder="Email address"> <button class="btn btn-warning"
+                        type="button">Suscribirse</button> </div>
+            </form>
+        </div>
+    </div>
+    <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4">
+        <p>© 2026 Huerto Hogar, derechos reservados</p>
+        <ul class="list-unstyled d-flex">
+            <li class="ms-3"><a class="link-body-emphasis" href="#" aria-label="Instagram"><svg class="bi" width="24"
+                        height="24">
+                        <use xlink:href="#instagram"></use>
+                    </svg></a></li>
+            <li class="ms-3"><a class="link-body-emphasis" href="#" aria-label="Facebook"><svg class="bi" width="24"
+                        height="24" aria-hidden="true">
+                        <use xlink:href="#facebook"></use>
+                    </svg></a></li>
+        </ul>
+    </div>
+</footer>
+<!--FOOTER-->
+
+</html>
