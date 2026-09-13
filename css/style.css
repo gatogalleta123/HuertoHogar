@@ -67,9 +67,14 @@ p{
     font-family: 'Montserrat', sans-serif;
 }
 
+
 .card-img-top{
     height: 300px;
     object-fit: cover;
+}
+
+.bg-blanco{
+    background-color: var(--blanco-suave);
 }
 :root{
     --blanco-suave: #F7F7F7;
